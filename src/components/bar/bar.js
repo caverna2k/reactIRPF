@@ -12,9 +12,18 @@ export default class Bar extends React.Component {
       bar3: 33,
     };
   }
-  percLiq;
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('bar update');
+    console.log(this.props);
+    this.state.bar1 = this.props.percInss;
+    this.state.bar2 = this.props.percIrpf;
+    this.state.bar3 = this.props.percLiq;
+  }
+
   render() {
     const { bar1, bar2, bar3 } = this.state;
+    const { percInss, percIrpf, percLiq } = this.props;
 
     return (
       <div>

@@ -11,10 +11,17 @@ export default class Calc extends React.Component {
       baseIRPF: 0,
       descontoIRPF: 0,
       salarioLiquidi: 0,
+      percInss: 0,
+      descontoIRPF: 0,
+      salarioLiquidi: 0,
     };
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
+    console.log('calc mount');
+  }
+
+  componentDidUpdate(prevProps, prevState) {
     console.log('calc update');
     var {
       baseInss,
@@ -22,41 +29,42 @@ export default class Calc extends React.Component {
       baseIRPF,
       descontoIRPF,
       salarioLiquidi,
+      percInss,
+      percIrpf,
+      percLiq,
     } = this.state;
     console.log('calc log');
     console.log(this.props);
+    console.log('xxxx:' + this.props.salario);
     var res = ccc(this.props.salario);
     console.log(res);
     var baseInss = formatNumber(res.baseINSS);
     var desconto = formatNumber(res.discountINSS);
     var baseIRPF = formatNumber(res.baseIRPF);
     var descontoIRPF = formatNumber(res.discountIRPF);
-    var salarioLiquidi = formatNumber(
-      res.baseINSS - (res.discountIRPF + res.discountINSS)
-    );
+    var salarioLiquidi = formatNumber(res.netSalary);
 
-    var percInss = res.discountINSS / this.props.salario;
-    var percIrpf = res.discountIRPF / this.props.salario;
-    var percLiq = salarioLiquidi / this.props.salario;
+    percInss = res.discountINSS / this.props.salario;
+    percIrpf = res.discountIRPF / this.props.salario;
+    percLiq = res.netSalary / this.props.salario;
 
-    this.setState({
-      baseInss: baseInss,
-      desconto: desconto,
-      baseIRPF: baseIRPF,
-      descontoIRPF: descontoIRPF,
-      salarioLiquidi: salarioLiquidi,
-    });
+    this.state.baseInss = baseInss;
+    this.state.desconto = desconto;
+    this.state.baseIRPF = baseIRPF;
+    this.state.descontoIRPF = descontoIRPF;
+    this.state.salarioLiquidi = salarioLiquidi;
+    this.state.percInss = res.discountINSS / res.baseINSS;
+    this.state.percIrpf = res.discountIRPF / res.baseIRPF;
+    this.state.percLiq = res.netSalary / res.baseIRPF;
+    console.log(this.state);
+    console.log(this.props);
+  }
+
+  componentDidCatch() {
+    console.log('catch');
   }
 
   render() {
-    var {
-      baseInss,
-      desconto,
-      baseIRPF,
-      descontoIRPF,
-      salarioLiquidi,
-    } = this.state;
-
     return (
       <div
         style={{
@@ -75,7 +83,7 @@ export default class Calc extends React.Component {
           }}
         >
           <label for="biss">Base INSS</label>
-          <input id="biss" type="text" value={baseInss} />
+          <input id="biss" type="text" value={this.state.baseInss} />
         </div>
 
         <div
@@ -87,7 +95,7 @@ export default class Calc extends React.Component {
           }}
         >
           <label for="diss">Desconto INSS</label>
-          <input id="diss" type="text" value={desconto} />
+          <input id="diss" type="text" value={this.state.desconto} />
         </div>
 
         <div
@@ -99,7 +107,7 @@ export default class Calc extends React.Component {
           }}
         >
           <label for="birr">Base IRPF</label>
-          <input id="birr" type="text" value={baseIRPF} />
+          <input id="birr" type="text" value={this.state.baseIRPF} />
         </div>
 
         <div
@@ -111,7 +119,7 @@ export default class Calc extends React.Component {
           }}
         >
           <label for="dirr">Desconto IRPF</label>
-          <input id="dirr" type="text" value={descontoIRPF} />
+          <input id="dirr" type="text" value={this.state.descontoIRPF} />
         </div>
         <div
           style={{
@@ -122,7 +130,7 @@ export default class Calc extends React.Component {
           }}
         >
           <label for="dirr">Salário Liquido</label>
-          <input id="dirr" type="text" value={salarioLiquidi} />
+          <input id="dirr" type="text" value={this.state.salarioLiquidi} />
         </div>
       </div>
     );
